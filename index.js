@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+// require models before strats
+require("./models/User");
 // fire off google strategy
 require("./services/passport");
 const keys = require("./config/keys");
