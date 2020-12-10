@@ -4,8 +4,19 @@ const mongoose = require("mongoose");
 require("./models/User");
 // fire off google strategy
 require("./services/passport");
+const cookieSession = require("cookie-session");
+const passport = require("passport");
 const keys = require("./config/keys");
+
 const app = express();
+
+app.use(
+  cookieSession({
+    // 30 days before expire
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey],
+  })
+);
 
 require("./routes/authRoutes")(app);
 const PORT = process.env.PORT || 5000;
