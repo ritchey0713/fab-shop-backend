@@ -5,10 +5,16 @@
 
 const keys = require("../config/keys");
 const Stripe = require("stripe")(keys.stripeSecretKey);
-const paymentIntent = require("../services/payments");
+const payment = require("../services/payments");
 
 module.exports = (app) => {
-  app.post("/api/payment_intents", async (req, res) => {
-    console.log(req.body, "RES");
+  app.post("/api/stripe", async (req, res) => {
+    try {
+      const { amount } = req.body;
+      const paymentToken = await payment.paymentIntent(amount);
+      res.status(200).send(paymentToken.client_secret);
+    } catch (err) {
+      res.status(500).json({ statusCode: 500, message: err.message });
+    }
   });
 };
