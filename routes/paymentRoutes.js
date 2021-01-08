@@ -9,7 +9,6 @@ module.exports = (app) => {
       const { amount } = req.body;
       // console.log(req.session.user.id);
       const paymentToken = await payment.paymentIntent(amount);
-      console.log(req.session._ctx.user);
       const paymentObj = {
         tokenId: paymentToken.id,
         amount: paymentToken.amount,
@@ -21,10 +20,10 @@ module.exports = (app) => {
         currency: paymentToken.currency,
         paymentMethod: paymentToken.payment_method,
       };
-      console.log(paymentObj.id, "ID");
       const newOrder = await new Order(paymentObj).save();
-      console.log(newOrder, "NEW ORDER");
-      res.status(200).send(paymentToken.client_secret, newOrder);
+      res
+        .status(200)
+        .send({ secret: paymentToken.client_secret, order: newOrder });
     } catch (err) {
       console.log("ERR", err.message);
       res.status(500).json({ statusCode: 500, message: err.message });
