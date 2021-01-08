@@ -11,7 +11,9 @@ module.exports = (app) => {
   app.post("/api/stripe", async (req, res) => {
     try {
       const { amount } = req.body;
+      // console.log(req.session.user.id);
       const paymentToken = await payment.paymentIntent(amount);
+      console.log(paymentToken);
       res.status(200).send(paymentToken.client_secret);
     } catch (err) {
       res.status(500).json({ statusCode: 500, message: err.message });
