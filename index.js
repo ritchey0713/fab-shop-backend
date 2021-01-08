@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 // require models before strats
 require("./models/User");
+require("./models/Order");
 // fire off google strategy
 require("./services/passport");
 const cookieSession = require("cookie-session");
