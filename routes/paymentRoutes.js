@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 // const keys = require("../config/keys");
 const payment = require("../services/payments");
 const Order = mongoose.model("orders");
+const requireLogin = require("../middlewares/requireLogin");
 
 module.exports = (app) => {
-  app.post("/api/stripe", async (req, res) => {
+  app.post("/api/stripe", requireLogin, async (req, res) => {
     try {
       const { amount } = req.body;
       // console.log(req.session.user.id);
@@ -12,7 +13,7 @@ module.exports = (app) => {
       const paymentObj = {
         tokenId: paymentToken.id,
         amount: paymentToken.amount,
-        userId: req.session._ctx.user.id,
+        userId: req.user.id,
         cancelledAt: paymentToken.cancelled_at,
         description: paymentToken.description,
         created_at: paymentToken.created_at,

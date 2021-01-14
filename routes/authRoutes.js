@@ -3,13 +3,16 @@ module.exports = (app) => {
   app.get(
     "/auth/google",
     passport.authenticate("google", { scope: ["profile", "email"] })
+    // () => {
+    //   console.log("here");
+    // }
   );
 
   app.get(
     "/auth/google/callback",
     passport.authenticate("google"),
     (req, res) => {
-      res.redirect("/fab_requests");
+      res.redirect("/dashboard");
     }
   );
 
