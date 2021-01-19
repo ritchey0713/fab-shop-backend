@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 // require models before strats
 require("./models/User");
 require("./models/Order");
+require("./models/Fab");
 // fire off google strategy
 require("./services/passport");
 const cookieSession = require("cookie-session");
