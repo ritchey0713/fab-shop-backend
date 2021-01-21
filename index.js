@@ -40,6 +40,7 @@ app.all("/*", (req, res, next) => {
 require("./routes/authRoutes")(app);
 require("./routes/paymentRoutes")(app);
 require("./routes/fabRoutes")(app);
+require("./routes/surveyRoutes")(app);
 const PORT = process.env.PORT || 5000;
 
 const dbConnection = async () => {
