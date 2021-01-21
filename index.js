@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 require("./models/User");
 require("./models/Order");
 require("./models/Fab");
+require("./models/Survey");
 // fire off google strategy
 require("./services/passport");
 const cookieSession = require("cookie-session");
