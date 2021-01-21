@@ -9,7 +9,7 @@ const fabSchema = new Schema({
   isStructural: Boolean,
   units: Number,
   notes: String,
-  userId: String,
+  _user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 mongoose.model("fabRequests", fabSchema);

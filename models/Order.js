@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const orderSchema = new Schema({
   tokenId: String,
-  userId: String,
+  _user: { type: Schema.Types.ObjectId, ref: "User" },
   amount: Number,
   description: String,
   cancelled_at: Boolean,
