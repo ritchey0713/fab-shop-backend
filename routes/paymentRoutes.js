@@ -30,4 +30,18 @@ module.exports = (app) => {
       res.status(500).json({ statusCode: 500, message: err.message });
     }
   });
+  app.post("/api/credits", requireLogin, async (req, res) => {
+    const { amount, credits } = req.body;
+    const paymentToken = await payment.paymentIntent(amount);
+    // req.user.credits
+    // passport allows us to access the mongoose obj
+    req.user.credits += credits;
+    const user = await req.user.save();
+    res.status(200).send({ secret: paymentToken.client_secret, user });
+    try {
+    } catch (err) {
+      console.log("ERR", err.message);
+      res.status(500).json({ statusCode: 500, message: err.message });
+    }
+  });
 };
