@@ -14,7 +14,8 @@ module.exports = async (body, subject, recipients) => {
     from: keys.mailFrom,
     subject,
     text: body,
-    personalizations: recipients.map((recipient) => ({ to: [recipient] })),
+    // personalizations: recipients.map((recipient) => ({ to: [recipient] })),
+    personalizations: recipients.map(({ email }) => ({ to: [email] })),
   };
 
   try {
