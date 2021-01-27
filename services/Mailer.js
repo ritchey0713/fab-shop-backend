@@ -9,19 +9,41 @@ const sgMail = require("@sendgrid/mail");
 const keys = require("../config/keys");
 sgMail.setApiKey(keys.sendGridKey);
 
-module.exports = async (body, subject, recipients) => {
-  const msg = {
-    from: keys.mailFrom,
-    subject,
-    text: body,
-    // personalizations: recipients.map((recipient) => ({ to: [recipient] })),
-    personalizations: recipients.map(({ email }) => ({ to: [email] })),
-  };
+class Mailer {
+  constructor(survey, content) {
+    const { subject, recipients } = survey;
+    this.msg = {
+      to: recipients.map((item) => item.email),
 
-  try {
-    const result = await sgMail.send(msg);
-    console.log(result);
-  } catch (err) {
-    console.log(err);
+      from: keys.mailFrom,
+      subject,
+      html: content,
+      trackingSettings: {
+        clickTracking: {
+          enable: true,
+        },
+        openTracking: {
+          enable: true,
+        },
+        subscriptionTracking: {
+          enable: true,
+        },
+      },
+    };
+
+    this.send = async () => {
+      try {
+        const response = await sgMail.send(this.msg);
+
+        return response;
+      } catch (error) {
+        console.error(error);
+        if (error.response) {
+          console.error(error.response.body);
+        }
+      }
+    };
   }
-};
+}
+
+module.exports = Mailer;
