@@ -13,7 +13,7 @@ class Mailer {
   constructor(survey, content) {
     const { subject, recipients } = survey;
     this.msg = {
-      to: recipients.map((item) => item.email),
+      to: recipients.map((recipient) => recipient.email),
 
       from: keys.mailFrom,
       subject,
@@ -34,7 +34,7 @@ class Mailer {
     this.send = async () => {
       try {
         const response = await sgMail.send(this.msg);
-
+        console.log(response);
         return response;
       } catch (error) {
         console.error(error);
