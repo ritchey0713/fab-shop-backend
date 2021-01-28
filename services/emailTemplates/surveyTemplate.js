@@ -10,7 +10,13 @@ module.exports = (survey) => {
             Please answer the following question:
           </p>
           <p>
-            ${survey}
+            ${survey.body}
+            <div>
+              <a href="http://localhost:3000">Yes</a>
+            </div>
+            <div>
+              <a href="http://localhost:3000">No</a>
+            </div>
           </p>
         </div>
       </body>
