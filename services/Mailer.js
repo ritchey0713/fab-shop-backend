@@ -33,8 +33,7 @@ class Mailer {
 
     this.send = async () => {
       try {
-        const response = await sgMail.send(this.msg);
-        console.log(response);
+        const response = await sgMail.sendMultiple(this.msg);
         return response;
       } catch (error) {
         console.error(error);

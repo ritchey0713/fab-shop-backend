@@ -11,13 +11,15 @@ module.exports = (app) => {
   });
 
   app.post("/api/surveys", requireLogin, requireCredits, async (req, res) => {
-    const { title, subject, body, recipients } = req.body;
-
+    const { title, subject, body, recipients } = req.body.values;
     const survey = new Survey({
       title,
       subject,
       body,
-      recipients: recipients.split(",").map((email) => ({ email })),
+      recipients: recipients.map((email) => ({ email: email.recipient })),
+      // recipients: recipients.map((email) => {
+      //   console.log("IN SURVEY NEW", email);
+      // }),
       _user: req.user.id,
       dateSent: Date.now(),
     });
@@ -29,9 +31,13 @@ module.exports = (app) => {
       await survey.save();
       req.user.credits -= 1;
       const user = await req.user.save();
-      res.send(user);
+      res.send({ survey, user });
     } catch (err) {
       res.status(422).send(err);
     }
+  });
+
+  app.post("/api/surveys/webhooks", (req, res) => {
+    console.log(req.body);
   });
 };
