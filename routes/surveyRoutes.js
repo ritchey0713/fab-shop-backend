@@ -4,6 +4,9 @@ const requireLogin = require("../middlewares/requireLogin");
 const Survey = mongoose.model("surveys");
 const Mailer = require("../services/Mailer");
 const template = require("../services/emailTemplates/surveyTemplate");
+const { Path } = require("path-parser");
+const { URL } = require("url");
+const { uniqBy } = require("lodash");
 
 module.exports = (app) => {
   app.get("/api/surveys/thanks", (req, res) => {
@@ -38,6 +41,24 @@ module.exports = (app) => {
   });
 
   app.post("/api/surveys/webhooks", (req, res) => {
-    console.log(req.body);
+    const events = req.body.map(({ url, email }) => {
+      const pathname = new URL(url).pathname;
+      const p = new Path("/api/surveys/:surveyId/:choice");
+      const match = p.test(pathname);
+      if (match) {
+        return {
+          email,
+          surveyId: match.surveyId,
+          choice: match.choice,
+        };
+      }
+    });
+
+    const compactEvents = events.filter(Boolean);
+    const uniqEvents = uniqBy(compactEvents, "email", "surveyId");
+
+    console.log(uniqEvents);
+
+    res.send({});
   });
 };
