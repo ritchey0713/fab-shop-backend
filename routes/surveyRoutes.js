@@ -40,6 +40,7 @@ module.exports = (app) => {
     }
   });
 
+  // this goes off to sendgrid
   app.post("/api/surveys/webhooks", (req, res) => {
     const p = new Path("/api/surveys/:surveyId/:choice");
     const events = req.body.map(({ url, email }) => {
@@ -55,6 +56,23 @@ module.exports = (app) => {
 
     const compactEvents = events.filter(Boolean);
     const uniqEvents = uniqBy(compactEvents, "email", "surveyId");
+
+    const updatedEvents = uniqEvents.forEach(({ surveyId, email, choice }) => {
+      Survey.updateOne(
+        {
+          _id: surveyId,
+          recipients: {
+            // has to match the email and responded (much faster, and doesnt update or touch data is doenst need to)
+            $elemMatch: { email: email, responded: false },
+          },
+        },
+        {
+          //update the survey, adding 1 to choice and setting the recipeint email to know it responded
+          $inc: { [choice]: 1 },
+          $set: { "recipients.$.responded": true },
+        }
+      ).exec();
+    });
 
     res.send({});
   });
