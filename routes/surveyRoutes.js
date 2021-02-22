@@ -9,7 +9,7 @@ const { URL } = require("url");
 const { uniqBy } = require("lodash");
 
 module.exports = (app) => {
-  app.get("/api/surveys/thanks", (req, res) => {
+  app.get("/api/surveys/:surveyId/:choice", (req, res) => {
     res.send("thanks for voting!");
   });
 
@@ -57,6 +57,7 @@ module.exports = (app) => {
     const compactEvents = events.filter(Boolean);
     const uniqEvents = uniqBy(compactEvents, "email", "surveyId");
 
+    // proper way to make updates to something with assocs to another model
     const updatedEvents = uniqEvents.forEach(({ surveyId, email, choice }) => {
       Survey.updateOne(
         {
@@ -70,10 +71,19 @@ module.exports = (app) => {
           //update the survey, adding 1 to choice and setting the recipeint email to know it responded
           $inc: { [choice]: 1 },
           $set: { "recipients.$.responded": true },
+          lastResponded: new Date(),
         }
       ).exec();
     });
 
     res.send({});
+  });
+
+  app.get("/api/surveys", requireLogin, async (req, res) => {
+    const surveys = await Survey.find({ _user: req.user.id }).select({
+      recipients: false,
+    });
+
+    res.send(surveys);
   });
 };
